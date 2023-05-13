@@ -1,21 +1,44 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import img from '../../assets/images/login/login.svg'
 import { useContext } from 'react';
 import { AuthContext } from '../../providers/AuthProviders';
+import SocalLogger from '../Shared/SocalLogger/SocalLogger';
 const Login = () => {
 
   const {signIn} = useContext(AuthContext)
+  const location = useLocation();
+  const navigate = useNavigate()
+  const from = location.state?.from?.pathname || '/'
 
     const handleLogin = event =>{
         event.preventDefault()
         const form = event.target;
         const email = form.email.value;
         const password = form.password.value;
-        console.log(email, password)
         signIn(email, password)
         .then(result =>{
-          const lodderUser = result.user;
-          console.log(lodderUser)
+          const User = result.user;
+
+          const loggerUser = {
+            email: User.email
+
+          }
+          navigate(from, {replace: true})
+          fetch('http://localhost:5000/jwt',{
+            method: 'POST',
+            headers: {
+              'content-type' : 'application/json'
+            },
+            body: JSON.stringify(loggerUser)
+          })
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+          
+          localStorage.setItem('car-access-Itmes' , data.token)
+          }
+          )
+
         })
         .catch(error => console.log(error))
     }
@@ -52,6 +75,7 @@ const Login = () => {
         </form>
         <p>New to car doctor <Link className='font-bold text-orange-600' to='/signup'>Sign Up</Link></p>
       </div>
+      <SocalLogger></SocalLogger>
     </div>
   </div>
 </div>

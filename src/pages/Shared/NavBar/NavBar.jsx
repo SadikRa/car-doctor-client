@@ -1,11 +1,29 @@
 import { Link } from "react-router-dom";
 import logo from '../../../assets/logo.svg'
+import { useContext } from "react";
+import { AuthContext } from "../../../providers/AuthProviders";
 
 const NavBar = () => {
+
+
+  const {user , logOut} = useContext(AuthContext)
+
+  const handleLogOut = () =>{
+    logOut()
+    .then(() => {
+      localStorage.removeItem('car-access-Itmes')
+    })
+    .then(error => console.log(error))
+  }
+
   const navItmes = <>
   
     <li><Link to='/'>Home</Link></li>
-    <li><Link to='/about'>About</Link></li>
+    {user ?  <>
+    <li><Link to='/bookings'>My Booking</Link></li>
+      <li><button onClick={handleLogOut}>LOG OUT</button></li>
+    </> :
+    <li><Link to='/login'>Login</Link></li>}
   </>
     return (
         <div>
