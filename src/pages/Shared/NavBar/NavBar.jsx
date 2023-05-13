@@ -11,7 +11,7 @@ const NavBar = () => {
   const handleLogOut = () =>{
     logOut()
     .then(() => {
-      localStorage.removeItem('car-access-Itmes')
+      
     })
     .then(error => console.log(error))
   }
